@@ -1,0 +1,10 @@
+{
+  "name": "fivem-prometheus",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Kevin Poirot <hellslicer@minecorps.fr>",
+  "license": "MIT",
+  "dependencies": {
+    "prom-client": "^11.1.1"
+  }
+}

@@ -16,11 +16,48 @@ const latencyHistogram = new prometheus.Histogram({ name: 'fxs_players_latency',
 const minPlayerPing = new prometheus.Gauge({ name: 'fxs_min_player_ping', help: 'Minimum player ping.' });
 const maxPlayerPing = new prometheus.Gauge({ name: 'fxs_max_player_ping', help: 'Maximum player ping.' });
 
-setInterval(() => {
+const objectCountG = new prometheus.Gauge({ name: 'fxs_object_count', help: 'Current object count.'});
+const pedCountG = new prometheus.Gauge({ name: 'fxs_ped_count', help: 'Current ped count.'});
+const vehicleCountG = new prometheus.Gauge({ name: 'fxs_vehicle_count', help: 'Current vehicle count.'});
+
+const eventsSentToClient = new prometheus.Gauge({ name: 'fxs_events_client', help: 'Events sent to client from server'});
+const eventsSentToServer = new prometheus.Gauge({name : 'fxs_events_server', help: 'Events sent from server to server'});
+
+function delay(time) {
+	return new Promise(resolve => setTimeout(resolve, time));
+}
+
+async function gatherEvents() {
+	let sCount = 0;
+	let cCount = 0;
+	emit("prometheus:_gatherEventCount", function(serverCount, clientCount) {
+		sCount += serverCount;
+		cCount += clientCount;
+	});
+
+	await delay(1000);
+
+	eventsSentToClient.set(cCount);
+	eventsSentToServer.set(sCount);
+
+	setTimeout(gatherEvents, 1000);
+}
+setTimeout(gatherEvents, 1000);
+
+
+setInterval(async () => {
 	const numIndices = GetNumPlayerIndices();
 
 	let cumulativeLatency = 0;
 	let minPing, maxPing;
+
+	const objectCount = GetAllObjects().length;
+	const pedCount = GetAllPeds().length;
+	const vehicleCount = GetAllVehicles().length;
+	objectCountG.set(objectCount);
+	pedCountG.set(pedCount);
+	vehicleCountG.set(vehicleCount);
+
 
 	for (let playerIndex = 0; playerIndex < numIndices; playerIndex++) {
 		const player = GetPlayerFromIndex(playerIndex);

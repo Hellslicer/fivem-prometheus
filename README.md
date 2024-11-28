@@ -45,6 +45,14 @@ scrape_configs:
 
 ## Usage
 
+### Using the server events gauge
+
+In order to make the server events gauge work, you need to add this line on top of already registered server scripts in `fxmanifest.lua`
+**Replace `prometheus` with whatever your prometheus resource name is.**
+```lua
+server_script '@prometheus/eventHandler.lua'
+```
+
 ### Add a new metric
 
 ```lua
@@ -65,3 +73,4 @@ TriggerEvent("prometheus:addMetric", "Gauge", "fxs_gauge_example", "Gauge exampl
     end
 end)
 ```
+

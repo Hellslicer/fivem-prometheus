@@ -74,3 +74,8 @@ TriggerEvent("prometheus:addMetric", "Gauge", "fxs_gauge_example", "Gauge exampl
 end)
 ```
 
+### Using the Prometheus data in Grafana
+
+We supplied a `grafanaDashboard.json` including a example Grafana dashboard to use.
+To use it refer to [Grafana Documentation](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/)
+

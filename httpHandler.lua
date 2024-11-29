@@ -35,6 +35,7 @@ SetHttpHandler(function(req, res)
     local authorizedRequest = authEnabled == 0 or req.headers['Authorization'] == authorizationHeader
     if req.path == '/metrics' and authorizedRequest then
         res.send(data)
+        TriggerEvent('prometheus:_resetGauges')
     else
         res.send('Route /' .. GetCurrentResourceName() .. req.path .. ' not found.')
     end

@@ -27,9 +27,9 @@ function delay(time) {
 	return new Promise(resolve => setTimeout(resolve, time));
 }
 
+let sCount = 0;
+let cCount = 0;
 async function gatherEvents() {
-	let sCount = 0;
-	let cCount = 0;
 	emit("prometheus:_gatherEventCount", function(serverCount, clientCount) {
 		sCount += serverCount;
 		cCount += clientCount;
@@ -120,6 +120,11 @@ on('prometheus:addMetric', (type, name, description, cb) => {
 on('prometheus:_getMetrics', (cb) => {
 	cb(register.metrics());
 });
+
+on('prometheus:_resetGauges', () => {
+	sCount = 0;
+	cCount = 0;
+})
 
 // Don't use this for now, there is a deadlock somewhere :/
 /*SetHttpHandler((req, res) => {
